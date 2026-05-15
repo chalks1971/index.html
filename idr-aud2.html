@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IDR ↔ AUD</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #111;
+  color: white;
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 20px;
+  font-size: 26px;
+  text-align: center;
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  font-size: 18px;
+  margin: 6px 0;
+  border: none;
+  border-radius: 10px;
+  background: #333;
+  color: white;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.result {
+  text-align: center;
+  font-size: 34px;
+  margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<h2 id="title">IDR → AUD</h2>
+
+<input id="amount" type="number" placeholder="Enter amount" oninput="convert()">
+
+<button onclick="toggle()">Switch Mode</button>
+<button onclick="updateRate()">Update Rate</button>
+
+<div class="grid">
+  <button onclick="setVal(100000)">100k</button>
+  <button onclick="setVal(500000)">500k</button>
+  <button onclick="setVal(1000000)">1M</button>
+  <button onclick="setVal(2000000)">2M</button>
+</div>
+
+<div class="result" id="result">0.00</div>
+
+<div style="text-align:center;margin-top:10px;">
+  Rate: <span id="rate">0.000079</span>
+</div>
+
+<script>
+
+// ✅ VARIABLES
+var rate = 0.000079;
+var mode = "IDR";
+
+// ✅ LOAD SAVED RATE
+var saved = localStorage.getItem("rate");
+if (saved) {
+  rate = parseFloat(saved);
+  document.getElementById("rate").innerHTML = rate;
+}
+
+// ✅ CONVERT
+function convert() {
+  var input = document.getElementById("amount").value;
+  var val = parseFloat(input);
+
+  if (!val) {
+    document.getElementById("result").innerHTML = "0.00";
+    return;
+  }
+
+  var result;
+
+  if (mode === "IDR") {
+    result = val * rate;
+  } else {
+    result = val / rate;
+  }
+
+  document.getElementById("result").innerHTML = result.toFixed(2);
+}
+
+// ✅ BUTTON VALUE
+function setVal(v) {
+  document.getElementById("amount").value = v;
+  convert();
+}
+
+// ✅ TOGGLE MODE
+function toggle() {
+  if (mode === "IDR") {
+    mode = "AUD";
+    document.getElementById("title").innerHTML = "AUD → IDR";
+  } else {
+    mode = "IDR";
+    document.getElementById("title").innerHTML = "IDR → AUD";
+  }
+  convert();
+}
+
+// ✅ UPDATE RATE
+function updateRate() {
+  var newRate = prompt("Enter IDR → AUD rate:");
+
+  if (newRate && !isNaN(newRate)) {
+    rate = parseFloat(newRate);
+
+    localStorage.setItem("rate", rate);
+    document.getElementById("rate").innerHTML = rate;
+
+    convert();
+  }
+}
+
+</script>
+
+</body>
+</html>
